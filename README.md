@@ -1,10 +1,10 @@
 # DE1-Project
 ### Team members
 
-*Střítežský Jiří
-*Smetana Martin
-*Ritschel Natan
-*Špalle Vojtěch
+* Střítežský Jiří
+* Smetana Martin
+* Ritschel Natan
+* Špalle Vojtěch
 
 ### Abstract
 
