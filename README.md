@@ -1,10 +1,10 @@
 # DE1-Project
 ### Team members
 
-* Member 1 (responsible for ...)
-* Member 2 (responsible for ...)
-* Member 3 (responsible for ...)
-* Member 4 (responsible for ...)
+*Střítežský Jiří
+*Smetana Martin
+*Ritschel Natan
+*Špalle Vojtěch
 
 ### Abstract
 
