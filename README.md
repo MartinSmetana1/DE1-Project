@@ -1,7 +1,7 @@
 # DE1-Project
 ### Team members
 
-* Střítežský Jiří
+* Střítežský Jiří - nejelepsi
 * Smetana Martin
 * Ritschel Natan
 * Špalle Vojtěch
