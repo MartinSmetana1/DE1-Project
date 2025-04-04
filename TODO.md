@@ -4,4 +4,4 @@ intro
     []  a udelejte si vlastni branch a pushuj az to bude fungovat
 TODO:
     []
-    []
+    [lol]

@@ -1,0 +1,1 @@
+-wto "f3e90984cc274c84b42d7945a9f99e44" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "cfg_tb_de_morgan_behav" "xil_defaultlib.cfg_tb_de_morgan" -log "elaborate.log" 

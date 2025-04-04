@@ -1,0 +1,7 @@
+Running: xsim.dir/cfg_tb_de_morgan_behav/xsimk.exe -simmode gui -wdb cfg_tb_de_morgan_behav.wdb -simrunnum 0 -socket 50083
+Design successfully loaded
+Design Loading Memory Usage: 8636 KB (Peak: 8636 KB)
+Design Loading CPU Usage: 31 ms
+Simulation completed
+Simulation Memory Usage: 9176 KB (Peak: 9176 KB)
+Simulation CPU Usage: 124 ms
