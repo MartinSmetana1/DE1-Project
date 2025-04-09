@@ -1,77 +1,89 @@
--- Testbench automatically generated online
--- at https://vhdl.lapinoo.net
--- Generation date : Tue, 08 Apr 2025 16:59:10 GMT
--- Request id : cfwk-fed377c2-67f555de2cb5a
-
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 entity tb_pwm_module is
+-- Testbench entity nemá žádné porty
 end tb_pwm_module;
 
-architecture tb of tb_pwm_module is
+architecture behavior of tb_pwm_module is
+    component pwm is
+        generic (
+            max_value :integer:=256; -- Max value for duty cycl
+            pwm_bit_width : integer:=8 -- Bit width for duty cycle
+        );
+        Port (
+            clk         : in  STD_LOGIC;
+            rst       : in  STD_LOGIC;
+            duty_cycle : in  STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
+            pwm_out     : out STD_LOGIC
+        );
+    end component pwm;
+    -- Konfigurace generických parametrů
     constant pwm_bit_width : integer := 8;
+    constant max_value     : integer := 256;
 
-    component pwm
-        port (clk        : in std_logic;
-              rst        : in std_logic;
-              duty_cycle : in std_logic_vector (pwm_bit_width-1 downto 0);
-              pwm_out    : out std_logic);
-    end component;
+    -- Signály pro propojení s testovanou entitou
+    signal clk         : STD_LOGIC := '0';
+    signal rst         : STD_LOGIC := '0';
+    signal duty_cycle  : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
+    signal pwm_out     : STD_LOGIC;
 
-    signal clk        : std_logic;
-    signal rst        : std_logic;
-    signal duty_cycle : std_logic_vector (pwm_bit_width-1 downto 0);
-    signal pwm_out    : std_logic;
-
-    constant TbPeriod : time := 10 ns; -- ***EDIT*** Put right period here
-    signal TbClock : std_logic := '0';
-    signal TbSimEnded : std_logic := '0';
+    -- Taktovací perioda
+    constant clk_period : time := 10 ns;
 
 begin
 
-    dut : pwm
-    port map (clk        => clk,
-              rst        => rst,
-              duty_cycle => duty_cycle,
-              pwm_out    => pwm_out);
+    -- Instance testovaného modulu
+    uut: pwm
+        generic map (
+            max_value => max_value,
+            pwm_bit_width => pwm_bit_width
+        )
+        port map (
+            clk => clk,
+            rst => rst,
+            duty_cycle => duty_cycle,
+            pwm_out => pwm_out
+        );
 
-    -- Clock generation
-    TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
-
-    -- ***EDIT*** Check that clk is really your main clock signal
-    clk <= TbClock;
-
-    stimuli : process
+    -- Generátor hodinového signálu
+    clk_process : process
     begin
-        duty_cycle <= (others => '0');
+        while true loop
+            clk <= '0';
+            wait for clk_period / 2;
+            clk <= '1';
+            wait for clk_period / 2;
+        end loop;
+    end process;
+
+    -- Stimuly
+    stim_proc: process
+    begin
+        -- Reset
         rst <= '1';
-        wait for 100 ns;
+        wait for 20 ns;
         rst <= '0';
-        wait for 100 ns;
-    
-        -- Změna duty cycle na 25%
-        duty_cycle <= "01000000"; -- 64 z 256
-        wait for 50 * TbPeriod;
-    
-        -- Změna duty cycle na 50%
-        duty_cycle <= "10000000"; -- 128 z 256
-        wait for 50 * TbPeriod;
-    
-        -- Změna duty cycle na 75%
-        duty_cycle <= "11000000"; -- 192 z 256
-        wait for 50 * TbPeriod;
-    
+
+        -- Nastavení duty cycle a pozorování výstupu
+        duty_cycle <= std_logic_vector(to_unsigned(64, pwm_bit_width)); -- 25%
+        wait for 3 ms;
+
+        duty_cycle <= std_logic_vector(to_unsigned(128, pwm_bit_width)); -- 50%
+        wait for 3 ms;
+
+        duty_cycle <= std_logic_vector(to_unsigned(192, pwm_bit_width)); -- 75%
+        wait for 3 ms;
+
+        duty_cycle <= std_logic_vector(to_unsigned(255, pwm_bit_width)); -- ~100%
+        wait for 3 ms;
+
+        duty_cycle <= std_logic_vector(to_unsigned(0, pwm_bit_width)); -- 0%
+        wait for 3 ms;
+
         -- Ukončení simulace
-        TbSimEnded <= '1';
         wait;
     end process;
 
-end tb;
-
--- Configuration block below is required by some simulators. Usually no need to edit.
-
-configuration cfg_tb_pwm of tb_pwm_module is
-    for tb
-    end for;
-end cfg_tb_pwm;
+end behavior;
