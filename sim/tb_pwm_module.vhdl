@@ -16,7 +16,9 @@ architecture behavior of tb_pwm_module is
             clk         : in  STD_LOGIC;
             rst       : in  STD_LOGIC;
             duty_cycle : in  STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
-            pwm_out     : out STD_LOGIC
+            pwm_out     : out STD_LOGIC;
+            btn_up     : in  STD_LOGIC; -- Button to increase duty cycle
+            btn_down   : in  STD_LOGIC -- Button to decrease duty cycle
         );
     end component pwm;
     -- Konfigurace generických parametrů
@@ -28,9 +30,11 @@ architecture behavior of tb_pwm_module is
     signal rst         : STD_LOGIC := '0';
     signal duty_cycle  : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal pwm_out     : STD_LOGIC;
+    signal btn_up      : STD_LOGIC := '0'; -- Button to increase duty cycle
+    signal btn_down    : STD_LOGIC := '0'; -- Button to decrease duty cycle
 
     -- Taktovací perioda
-    constant clk_period : time := 10 ns;
+    constant clk_period : time := 100 ns;
 
 begin
 
@@ -44,7 +48,9 @@ begin
             clk => clk,
             rst => rst,
             duty_cycle => duty_cycle,
-            pwm_out => pwm_out
+            pwm_out => pwm_out,
+            btn_up => btn_up,
+            btn_down => btn_down
         );
 
     -- Generátor hodinového signálu
@@ -66,17 +72,38 @@ begin
         wait for 20 ns;
         rst <= '0';
 
+        wait for 200 ns;
+        duty_cycle <= std_logic_vector(to_unsigned(255, pwm_bit_width));
+        wait for 3 ms;
+        -- Testování tlačítek pro změnu duty cycle
+        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 200 ns; 
+        btn_up <= '0'; -- Uvolnit tlačítko
+        wait for 200 ns;
+        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 200 ns; 
+        btn_up <= '0'; 
+        btn_down <= '1'; -- Zmáčknout tlačítko pro snížení duty cycle
+        wait for 200 ns;   
+        btn_down <= '0'; -- Uvolnit tlačítko
+        wait for 200 ns;
+
         -- Nastavení duty cycle a pozorování výstupu
-        duty_cycle <= std_logic_vector(to_unsigned(64, pwm_bit_width)); -- 25%
-        wait for 3 ms;
+        wait for 200 ns;wait for 20 ns;wait for 20 ns;wait for 20 ns;wait for 20 ns;wait for 20 ns;
+         btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 200 ns; 
+        btn_up <= '0'; -- Uvolnit tlačítko
+        wait for 200 ns;
+        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 200 ns; 
+        btn_up <= '0';  btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 200 ns; 
+        btn_up <= '0'; -- Uvolnit tlačítko
+        wait for 200 ns;
+        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 200 ns; 
+        btn_up <= '0'; 
 
-        duty_cycle <= std_logic_vector(to_unsigned(128, pwm_bit_width)); -- 50%
-        wait for 3 ms;
-
-        duty_cycle <= std_logic_vector(to_unsigned(192, pwm_bit_width)); -- 75%
-        wait for 3 ms;
-
-        duty_cycle <= std_logic_vector(to_unsigned(255, pwm_bit_width)); -- ~100%
         wait for 3 ms;
 
         duty_cycle <= std_logic_vector(to_unsigned(0, pwm_bit_width)); -- 0%
