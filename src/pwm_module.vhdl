@@ -26,7 +26,7 @@ architecture Behavioral of pwm is
     signal duty_cycle_int_precentage : INTEGER; -- Internal signal for duty cycle in percentage
     signal  temp_duty_precent : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0); -- Temporary signal for duty cycle in percentage
 
-    constant DEBOUNCE_LIMIT : integer := 100000; -- adjust depending on clk freq
+    constant DEBOUNCE_LIMIT : integer := 10_0000; -- adjust depending on clk freq   /10ms rn
     signal btn_up_sync, btn_down_sync : std_logic := '0';
     signal btn_up_cnt, btn_down_cnt : integer range 0 to DEBOUNCE_LIMIT := 0;
     signal btn_up_db, btn_down_db : std_logic := '0';
@@ -102,7 +102,7 @@ begin
         end if;
         btn_up_prev <= btn_up_db;
         btn_down_prev <= btn_down_db;
-        
+
     end if;
 end process;
 
