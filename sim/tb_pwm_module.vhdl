@@ -17,7 +17,6 @@ architecture behavior of tb_pwm_module is
             rst       : in  STD_LOGIC;
             pwm_out     : out STD_LOGIC;
             duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
-            hundreds_out:out INTEGER; -- Output hundreds of percentage
             tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
             ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
             duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
@@ -37,7 +36,6 @@ architecture behavior of tb_pwm_module is
     signal btn_down    : STD_LOGIC := '0'; -- Button to decrease duty cycle
     signal duty_cycle_out : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal duty_cycle_out_percent : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0'); -- Output duty cycle in percentage
-    signal hundreds_out : INTEGER := 0; -- Output hundreds of percentage
     signal tens_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output tens of percentage
     signal ones_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output ones of percentage
     
@@ -63,7 +61,6 @@ begin
             btn_down => btn_down,
             duty_cycle_out => duty_cycle_out,
             duty_cycle_out_percent => duty_cycle_out_percent,
-            hundreds_out => hundreds_out, -- Otevřeno pro testování
             tens_out => tens_out, -- Otevřeno pro testování
             ones_out => ones_out -- Otevřeno pro testování
         );
@@ -81,21 +78,21 @@ begin
 
     -- Stimuly
     stim_proc: process
-    begin
-        -- Reset
+begin
+  -- Reset
         rst <= '1';
         wait for 20 ns;
         rst <= '0';
 
-        wait for 200 ns;
+        wait for 200 us;
         wait for 3 ms;
         -- Testování tlačítek pro změnu duty cycle
         btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 200 ns; 
+        wait for 200 us; 
         btn_up <= '0'; -- Uvolnit tlačítko
-        wait for 200 ns;
+        wait for 200 us;
         btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 200 ns; 
+        wait for 200 ms; 
         btn_up <= '0'; 
 
        
@@ -107,9 +104,9 @@ begin
         wait for 3 ms;
 
         wait for 3 ms;
-
-        -- Ukončení simulace
-        wait;
-    end process;
+    -- Ukončení simulace
+    wait;
+end process;
+   
 
 end behavior;

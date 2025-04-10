@@ -13,7 +13,6 @@ entity pwm is
         pwm_out     : out STD_LOGIC;
         duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
         duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
-        hundreds_out:out INTEGER; -- Output hundreds of percentage
         tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
         ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
         btn_up     : in  STD_LOGIC; -- Button to increase duty cycle
@@ -26,6 +25,14 @@ architecture Behavioral of pwm is
     signal duty_cycle_internal : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal duty_cycle_int_precentage : INTEGER; -- Internal signal for duty cycle in percentage
     signal  temp_duty_precent : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0); -- Temporary signal for duty cycle in percentage
+
+    constant DEBOUNCE_LIMIT : integer := 100000; -- adjust depending on clk freq
+    signal btn_up_sync, btn_down_sync : std_logic := '0';
+    signal btn_up_cnt, btn_down_cnt : integer range 0 to DEBOUNCE_LIMIT := 0;
+    signal btn_up_db, btn_down_db : std_logic := '0';
+
+
+    signal btn_up_prev, btn_down_prev : std_logic := '0';
     
 begin
     duty_cycle_out <= duty_cycle_internal;
@@ -35,27 +42,77 @@ begin
     tens_out <= std_logic_vector(to_unsigned((duty_cycle_int_precentage mod 100) / 10, 4));
     ones_out <= STD_LOGIC_VECTOR(to_unsigned(duty_cycle_int_precentage mod 10, 4));
 -- Proces pro zpracování tlačítek
-    process (clk, rst)
-    begin
-        if rst = '1' then
-            duty_cycle_internal <= (others => '0');
-        elsif rising_edge(clk) then
-            if btn_up = '1' and unsigned(duty_cycle_internal) < (max_value-1) then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 3);
-            elsif btn_down = '1' and unsigned(duty_cycle_internal) > 0 then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 3);
 
+process(clk, rst)
+begin
+    if rst = '1' then
+        btn_up_cnt <= 0;
+        btn_down_cnt <= 0;
+        btn_up_db <= '0';
+        btn_down_db <= '0';
+    elsif rising_edge(clk) then
+        -- Debounce btn_up
+        if btn_up = '1' then
+            if btn_up_cnt < DEBOUNCE_LIMIT then
+                btn_up_cnt <= btn_up_cnt + 1;
+            end if;
+        else
+            btn_up_cnt <= 0;
+        end if;
+        
+        if btn_up_cnt = DEBOUNCE_LIMIT then
+            btn_up_db <= '1';
+        else
+            btn_up_db <= '0';
+        end if;
+
+        -- Debounce btn_down
+        if btn_down = '1' then
+            if btn_down_cnt < DEBOUNCE_LIMIT then
+                btn_down_cnt <= btn_down_cnt + 1;
+            end if;
+        else
+            btn_down_cnt <= 0;
+        end if;
+
+        if btn_down_cnt = DEBOUNCE_LIMIT then
+            btn_down_db <= '1';
+        else
+            btn_down_db <= '0';
+        end if;
+    end if;
+end process;
+
+process(clk, rst)
+begin
+    if rst = '1' then
+        duty_cycle_internal <= (others => '0');
+        btn_up_prev <= '0';
+        btn_down_prev <= '0';
+    elsif rising_edge(clk) then
+        if btn_up_db = '1' and btn_up_prev = '0' then
+            if btn_up_db = '1' and unsigned(duty_cycle_internal) < (max_value - 1) then
+                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 3);
             end if;
         end if;
-            
-    end process;
+        if btn_down_db = '1' and btn_down_prev = '0' then
+            if btn_down_db = '1' and unsigned(duty_cycle_internal) > 0 then
+                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 3);
+            end if;
+        end if;
+        btn_up_prev <= btn_up_db;
+        btn_down_prev <= btn_down_db;
+        
+    end if;
+end process;
+
+
  COUNTER_PROCESS : process (clk)
  begin
     if rising_edge(clk) then
         if rst = '1' then
             counter <= (others => '0');
-        else
-            
+        else 
             if counter <(max_value-1) then
                 counter <= counter + 1;
             else
@@ -68,11 +125,7 @@ begin
 PWM_GENERATOR : process (counter, duty_cycle_internal)
     begin
         if unsigned(duty_cycle_internal) > counter then
-            
-           
-
             pwm_out <= '1';
-            
         else
             pwm_out <= '0';
         end if;
