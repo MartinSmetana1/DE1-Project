@@ -92,7 +92,11 @@ begin
         btn_up <= '0'; -- Uvolnit tlačítko
         wait for 200 us;
         btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 200 ms; 
+        wait for 150 ms; 
+        btn_up <= '0'; 
+        wait for 200 ms;
+        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
+        wait for 150 ms; 
         btn_up <= '0'; 
 
        
