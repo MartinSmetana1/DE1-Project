@@ -10,8 +10,9 @@ entity pwm is
     Port (
         clk         : in  STD_LOGIC;
         rst       : in  STD_LOGIC;
-        duty_cycle : in  STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
         pwm_out     : out STD_LOGIC;
+        duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
+        duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
         btn_up     : in  STD_LOGIC; -- Button to increase duty cycle
         btn_down   : in  STD_LOGIC -- Button to decrease duty cycle
     );
@@ -23,7 +24,7 @@ architecture Behavioral of pwm is
     
 begin
 -- Proces pro zpracování tlačítek
-    process (clk, rst, duty_cycle)
+    process (clk, rst)
     begin
        -- duty_cycle_internal <= duty_cycle; -- Assign the input duty cycle to the internal signal
         if rst = '1' then
@@ -54,6 +55,8 @@ begin
 PWM_GENERATOR : process (counter, duty_cycle_internal)
     begin
         if unsigned(duty_cycle_internal) > counter then
+            duty_cycle_out <= duty_cycle_internal;
+            duty_cycle_out_percent <= std_logic_vector(resize(unsigned(duty_cycle_internal) * 100 / (max_value-1), pwm_bit_width));
             pwm_out <= '1';
         else
             pwm_out <= '0';
