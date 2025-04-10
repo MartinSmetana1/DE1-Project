@@ -41,9 +41,9 @@ begin
             duty_cycle_internal <= (others => '0');
         elsif rising_edge(clk) then
             if btn_up = '1' and unsigned(duty_cycle_internal) < (max_value-1) then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 25);
+                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 3);
             elsif btn_down = '1' and unsigned(duty_cycle_internal) > 0 then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 25);
+                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 3);
 
             end if;
         end if;
