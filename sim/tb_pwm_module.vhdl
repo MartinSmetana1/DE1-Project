@@ -17,6 +17,9 @@ architecture behavior of tb_pwm_module is
             rst       : in  STD_LOGIC;
             pwm_out     : out STD_LOGIC;
             duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
+            hundreds_out:out INTEGER; -- Output hundreds of percentage
+            tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
+            ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
             duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
             btn_up     : in  STD_LOGIC; -- Button to increase duty cycle
             btn_down   : in  STD_LOGIC -- Button to decrease duty cycle
@@ -34,6 +37,11 @@ architecture behavior of tb_pwm_module is
     signal btn_down    : STD_LOGIC := '0'; -- Button to decrease duty cycle
     signal duty_cycle_out : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal duty_cycle_out_percent : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0'); -- Output duty cycle in percentage
+    signal hundreds_out : INTEGER := 0; -- Output hundreds of percentage
+    signal tens_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output tens of percentage
+    signal ones_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output ones of percentage
+    
+
 
     -- Taktovací perioda
     constant clk_period : time := 100 ns;
@@ -54,7 +62,10 @@ begin
             btn_up => btn_up,
             btn_down => btn_down,
             duty_cycle_out => duty_cycle_out,
-            duty_cycle_out_percent => duty_cycle_out_percent
+            duty_cycle_out_percent => duty_cycle_out_percent,
+            hundreds_out => hundreds_out, -- Otevřeno pro testování
+            tens_out => tens_out, -- Otevřeno pro testování
+            ones_out => ones_out -- Otevřeno pro testování
         );
 
     -- Generátor hodinového signálu
@@ -86,17 +97,11 @@ begin
         btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
         wait for 200 ns; 
         btn_up <= '0'; 
-        btn_down <= '1'; -- Zmáčknout tlačítko pro snížení duty cycle
-        wait for 200 ns;   
-        btn_down <= '0'; -- Uvolnit tlačítko
-        wait for 200 ns;
 
-        -- Nastavení duty cycle a pozorování výstupu
-        wait for 200 ns;wait for 20 ns;wait for 20 ns;wait for 20 ns;wait for 20 ns;wait for 20 ns;
-         btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 200 ns; 
-        btn_up <= '0'; -- Uvolnit tlačítko
-        wait for 200 ns;
+       
+
+
+       
         
 
         wait for 3 ms;
