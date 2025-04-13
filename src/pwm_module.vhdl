@@ -115,12 +115,14 @@ begin
             
         elsif (btn_down_db='0'xor btn_up_db = '0') and accelerating = '1' then
             accelerating <= '0';
+            accelerating_counter <= (others => '0');
         end if;
         if (accelerating = '1') and btn_up_db='1' then
                 if unsigned(duty_cycle_internal) < (max_value - 1) then
                     duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 1);
                 end if;
         end if;
+    
         if (accelerating = '1') and btn_down_db='1' then
                 if unsigned(duty_cycle_internal) >0 then
                     duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 1);
