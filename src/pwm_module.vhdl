@@ -27,12 +27,15 @@ architecture Behavioral of pwm is
     signal  temp_duty_precent : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0); -- Temporary signal for duty cycle in percentage
 
     constant DEBOUNCE_LIMIT : integer := 10_0000; -- adjust depending on clk freq   /10ms rn
-    signal btn_up_sync, btn_down_sync : std_logic := '0';
     signal btn_up_cnt, btn_down_cnt : integer range 0 to DEBOUNCE_LIMIT := 0;
     signal btn_up_db, btn_down_db : std_logic := '0';
-
-
     signal btn_up_prev, btn_down_prev : std_logic := '0';
+
+    signal accelerating : STD_LOGIC:= '0';
+    signal accelerating_counter: UNSIGNED(23 downto 0):=(others =>'0');
+    constant TRESHOLD_ACCELERATION : UNSIGNED(23 downto 0) := TO_UNSIGNED(50_0000, 24); -- adjust depending on clk freq   /50ms rn
+    
+
     
 begin
     duty_cycle_out <= duty_cycle_internal;
@@ -89,6 +92,8 @@ begin
         duty_cycle_internal <= (others => '0');
         btn_up_prev <= '0';
         btn_down_prev <= '0';
+        accelerating <= '0';
+        accelerating_counter <= (others => '0');
     elsif rising_edge(clk) then
         if btn_up_db = '1' and btn_up_prev = '0' then
             if btn_up_db = '1' and unsigned(duty_cycle_internal) < (max_value - 1) then
@@ -99,6 +104,27 @@ begin
             if btn_down_db = '1' and unsigned(duty_cycle_internal) > 0 then
                 duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 3);
             end if;
+        end if;
+
+        -- Accelerating logic
+        if (btn_up_db = '1' and btn_down_db='0' )xor(btn_down_db = '1' and btn_up_db='0') then
+            accelerating_counter<= accelerating_counter + 1;
+            if accelerating_counter >= TRESHOLD_ACCELERATION  then
+                accelerating<='1';
+            end if;
+            
+        elsif (btn_down_db='0'xor btn_up_db = '0') and accelerating = '1' then
+            accelerating <= '0';
+        end if;
+        if (accelerating = '1') and btn_up_db='1' then
+                if unsigned(duty_cycle_internal) < (max_value - 1) then
+                    duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 1);
+                end if;
+        end if;
+        if (accelerating = '1') and btn_down_db='1' then
+                if unsigned(duty_cycle_internal) >0 then
+                    duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 1);
+                end if;
         end if;
         btn_up_prev <= btn_up_db;
         btn_down_prev <= btn_down_db;
