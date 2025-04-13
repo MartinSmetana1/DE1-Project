@@ -4,8 +4,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity pwm is
     generic (
-        max_value :integer:=256; -- Max value for duty cycl
-        pwm_bit_width : integer:=8 -- Bit width for duty cycle
+        max_value :integer:=200_000; -- Max value for duty cycl
+        pwm_bit_width :integer:=19 -- Bit width for duty cycle
     );
     Port (
         clk         : in  STD_LOGIC;
@@ -97,12 +97,12 @@ begin
     elsif rising_edge(clk) then
         if btn_up_db = '1' and btn_up_prev = '0' then
             if btn_up_db = '1' and unsigned(duty_cycle_internal) < (max_value - 1) then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 3);
+                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + 20);
             end if;
         end if;
         if btn_down_db = '1' and btn_down_prev = '0' then
             if btn_down_db = '1' and unsigned(duty_cycle_internal) > 0 then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 3);
+                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - 20);
             end if;
         end if;
 

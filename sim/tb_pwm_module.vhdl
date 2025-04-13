@@ -9,8 +9,8 @@ end tb_pwm_module;
 architecture behavior of tb_pwm_module is
     component pwm is
         generic (
-            max_value :integer:=256; -- Max value for duty cycl
-            pwm_bit_width : integer:=8 -- Bit width for duty cycle
+            max_value :integer:=200000; -- Max value for duty cycl
+            pwm_bit_width :integer:=19 -- Bit width for duty cycle
         );
         Port (
             clk         : in  STD_LOGIC;
@@ -25,8 +25,8 @@ architecture behavior of tb_pwm_module is
         );
     end component pwm;
     -- Konfigurace generických parametrů
-    constant pwm_bit_width : integer := 8;
-    constant max_value     : integer := 256;
+    constant pwm_bit_width : integer := 19;
+    constant max_value     : integer := 200000;
 
     -- Signály pro propojení s testovanou entitou
     signal clk         : STD_LOGIC := '0';
