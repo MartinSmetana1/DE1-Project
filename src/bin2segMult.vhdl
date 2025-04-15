@@ -46,15 +46,12 @@ begin
     
 process (Pos_register, ones_1, tens_1, clk, reset, ones_2, tens_2, hundreds_1, hundreds_2)
     begin
-        --nevim proc ale prirzeni digitu je takto potreba
         if rising_edge(clk) then
-            
             case Pos_register is
                 when 0 => 
                     POS_OUT <= b"1111_1110"; -- 1st position
                     seg <= Bin2Seg(ones_1); -- Convert binary to 7-segment display
                     Pos_register <= 1; -- Move to the next position
-
                 when 1 => 
                     POS_OUT <= b"1111_1101"; -- 2nd position
                     seg <= Bin2Seg(tens_1); -- Convert binary to 7-segment display
@@ -77,13 +74,7 @@ process (Pos_register, ones_1, tens_1, clk, reset, ones_2, tens_2, hundreds_1, h
                     Pos_register <= 0; -- Move to the next position
                 when others =>
                  POS_OUT <= b"1111_1111"; -- 3rd position
-                
             end case;
-            
         end if;
     end process;
-
-
-    
-
 end architecture;
