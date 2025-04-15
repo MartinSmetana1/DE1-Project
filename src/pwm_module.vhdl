@@ -13,6 +13,7 @@ entity pwm is
         pwm_out     : out STD_LOGIC;
         duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
         duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
+        hundreds_out : out STD_LOGIC_VECTOR(3 downto 0); -- Output hundreds of percentage
         tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
         ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
         btn_up     : in  STD_LOGIC; -- Button to increase duty cycle
@@ -42,6 +43,7 @@ begin
     duty_cycle_out_percent <= std_logic_vector(resize(unsigned(duty_cycle_internal) * 100 / (max_value-1), pwm_bit_width));
     temp_duty_precent <= std_logic_vector(resize(unsigned(duty_cycle_internal) * 100 / (max_value-1), pwm_bit_width));
     duty_cycle_int_precentage <= to_integer(unsigned(temp_duty_precent));
+    hundreds_out <= std_logic_vector(to_unsigned((duty_cycle_int_precentage mod 1000) / 100, 4));
     tens_out <= std_logic_vector(to_unsigned((duty_cycle_int_precentage mod 100) / 10, 4));
     ones_out <= STD_LOGIC_VECTOR(to_unsigned(duty_cycle_int_precentage mod 10, 4));
 -- Proces pro zpracování tlačítek

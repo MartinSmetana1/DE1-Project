@@ -10,18 +10,23 @@ architecture Behavioral of tb_bin2segMult is
         Port (
             clk : in STD_LOGIC;
             reset : in STD_LOGIC;
-            ones : in STD_LOGIC_VECTOR(3 downto 0);
-            tens : in STD_LOGIC_VECTOR(3 downto 0);
+            ones_1 : in STD_LOGIC_VECTOR(3 downto 0);
+            tens_1 : in STD_LOGIC_VECTOR(3 downto 0);
+            ones_2 : in STD_LOGIC_VECTOR(3 downto 0);
+            tens_2 : in STD_LOGIC_VECTOR(3 downto 0);
+            hundreds_1 : in STD_LOGIC_VECTOR(3 downto 0);
+            hundreds_2 : in STD_LOGIC_VECTOR(3 downto 0);
             seg : out STD_LOGIC_VECTOR(6 downto 0);
-            POS_OUT: out STD_LOGIC_VECTOR(5 downto 0)
+            POS_OUT: out STD_LOGIC_VECTOR(7 downto 0)
         );
     end component;
 
     -- Signals to connect to the UUT
     signal bin_in_ones : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
     signal bin_in_tens : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
+    signal bin_in_hundreds : STD_LOGIC_VECTOR(3 downto 0) := (others => '0');
     signal seg_out : STD_LOGIC_VECTOR(6 downto 0);
-    signal POS_OUT : STD_LOGIC_VECTOR(5 downto 0);
+    signal POS_OUT : STD_LOGIC_VECTOR(7 downto 0);
     signal clk : STD_LOGIC := '0';
     signal reset : STD_LOGIC := '0';
     constant clk_period : time := 100 ns;
@@ -32,8 +37,12 @@ begin
         Port map (
             clk => clk, -- Clock signal (not used in this testbench)
             reset => reset, -- Reset signal (not used in this testbench)
-            ones => bin_in_ones, -- Connect input to the UUT
-            tens => bin_in_tens, -- Connect input to the UUT
+            ones_1 => bin_in_ones, -- Connect input to the UUT
+            tens_1 =>  bin_in_tens, -- Connect input to the UUT
+            hundreds_1 =>  bin_in_hundreds, -- Connect input to the UUT
+            ones_2 => bin_in_ones, -- Connect input to the UUT
+            tens_2 =>  bin_in_tens, -- Connect input to the UUT
+            hundreds_2 =>  bin_in_hundreds, -- Connect input to the UUT
             seg => seg_out, -- Connect output to the UUT
             POS_OUT  => POS_OUT-- Connect output to the UUT
         );
@@ -56,21 +65,33 @@ begin
         reset <= '1';
         bin_in_ones <= "0000"; -- 0
         bin_in_tens <= "0000"; -- 0
+        --bin_in_hundreds <= "0001"; -- 0
         wait for 10 * clk_period; -- Wait for 10 clock cycles
         reset <= '0'; -- Release reset
     
         -- Iterate through all values from 0 to 99
+
         for tens in 0 to 9 loop
             for ones in 0 to 9 loop
                 bin_in_tens <= std_logic_vector(to_unsigned(tens, 4));
                 bin_in_ones <= std_logic_vector(to_unsigned(ones, 4));
-                wait for 10 * clk_period; -- Wait for 10 clock cycles
+                wait for 100 * clk_period; -- Wait for 10 clock cycles
+                
             end loop;
         end loop;
+        
+        bin_in_ones <= "0000"; -- 0
+        bin_in_tens <= "0000"; -- 0
+        wait for 100 * clk_period; -- Wait for 10 clock cycles  
+        bin_in_hundreds <= std_logic_vector(to_unsigned(1, 4)); -- Set hundreds to 1
+        wait for 100 * clk_period; -- Wait for 10 clock cycles
+
+        
     
         -- Reset inputs
         bin_in_ones <= "0000"; -- 0
         bin_in_tens <= "0000"; -- 0
+        bin_in_hundreds <= "0000"; -- 0
         wait for 10 * clk_period; -- Wait for 10 clock cycles
     
         wait; -- End simulation

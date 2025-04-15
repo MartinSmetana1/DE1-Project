@@ -17,6 +17,7 @@ architecture behavior of tb_pwm_module is
             rst       : in  STD_LOGIC;
             pwm_out     : out STD_LOGIC;
             duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
+            hundreds_out : out STD_LOGIC_VECTOR(3 downto 0); -- Output hundreds of percentage
             tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
             ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
             duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
@@ -36,8 +37,11 @@ architecture behavior of tb_pwm_module is
     signal btn_down    : STD_LOGIC := '0'; -- Button to decrease duty cycle
     signal duty_cycle_out : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal duty_cycle_out_percent : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0'); -- Output duty cycle in percentage
+    signal hundreds_out : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output hundreds of percentage
+    
     signal tens_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output tens of percentage
     signal ones_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output ones of percentage
+
     
 
 
@@ -61,6 +65,7 @@ begin
             btn_down => btn_down,
             duty_cycle_out => duty_cycle_out,
             duty_cycle_out_percent => duty_cycle_out_percent,
+            hundreds_out => hundreds_out, -- Otevřeno pro testování
             tens_out => tens_out, -- Otevřeno pro testování
             ones_out => ones_out -- Otevřeno pro testování
         );
