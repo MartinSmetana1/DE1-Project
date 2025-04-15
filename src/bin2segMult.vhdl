@@ -76,7 +76,7 @@ process (Pos_register, ones_1, tens_1, clk, reset, ones_2, tens_2, hundreds_1, h
                     seg <= Bin2Seg(hundreds_2); -- Convert binary to 7-segment display
                     Pos_register <= 0; -- Move to the next position
                 when others =>
-                 POS_OUT <= "111111"; -- 3rd position
+                 POS_OUT <= b"1111_1111"; -- 3rd position
                 
             end case;
             

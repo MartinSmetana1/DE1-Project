@@ -11,8 +11,6 @@ entity pwm is
         clk         : in  STD_LOGIC;
         rst       : in  STD_LOGIC;
         pwm_out     : out STD_LOGIC;
-        duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
-        duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
         hundreds_out : out STD_LOGIC_VECTOR(3 downto 0); -- Output hundreds of percentage
         tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
         ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
@@ -39,8 +37,6 @@ architecture Behavioral of pwm is
 
     
 begin
-    duty_cycle_out <= duty_cycle_internal;
-    duty_cycle_out_percent <= std_logic_vector(resize(unsigned(duty_cycle_internal) * 100 / (max_value-1), pwm_bit_width));
     temp_duty_precent <= std_logic_vector(resize(unsigned(duty_cycle_internal) * 100 / (max_value-1), pwm_bit_width));
     duty_cycle_int_precentage <= to_integer(unsigned(temp_duty_precent));
     hundreds_out <= std_logic_vector(to_unsigned((duty_cycle_int_precentage mod 1000) / 100, 4));

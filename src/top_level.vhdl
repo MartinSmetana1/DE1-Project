@@ -78,15 +78,13 @@ component bin2segMult is
 end component;
 component pwm is
     generic (
-        max_value :integer:=256; -- Max value for duty cycl
-        pwm_bit_width : integer:=8 -- Bit width for duty cycle
+        max_value :integer:=200_000; -- Max value for duty cycl
+        pwm_bit_width : integer:=19 -- Bit width for duty cycle
     );
     Port(
         clk         : in  STD_LOGIC;
         rst       : in  STD_LOGIC;
         pwm_out     : out STD_LOGIC;
-        duty_cycle_out : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0);
-        duty_cycle_out_percent : out STD_LOGIC_VECTOR (pwm_bit_width-1 downto 0); -- Output duty cycle in percentage
         tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
         ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
         hundreds_out : out STD_LOGIC_VECTOR(3 downto 0); -- Output hundreds of percentage
@@ -96,7 +94,6 @@ component pwm is
 end component;
 signal local_sig_en_500ms: std_logic;
 signal ones_1: std_logic_vector(3 downto 0);
-signal local_pwm: std_logic;
 signal tens_1: std_logic_vector(3 downto 0);
 signal ones_2 : std_logic_vector(3 downto 0);
 signal tens_2 : std_logic_vector(3 downto 0);
@@ -139,8 +136,6 @@ generic map(
         ones_out   => ones_1, -- Output ones of percentage
         tens_out   => tens_1, -- Output ones of percentage
         hundreds_out => hundreds_1, -- Output ones of percentage
-
-
         btn_up    => btn_up_pwm1, -- Button to increase duty cycle
         btn_down   =>btn_down_pwm1 -- Button to decrease duty cycle
     );
@@ -155,7 +150,7 @@ PWM_IN_2: component pwm
     Port map(
         clk         =>CLK100MHZ,
         rst       =>BTNC,
-        pwm_out    =>local_pwm,
+        pwm_out    =>LED16_R,
         ones_out   => ones_2, -- Output ones of percentage
         tens_out   => tens_2, -- Output ones of percentage
         hundreds_out => hundreds_2, -- Output ones of percentage
