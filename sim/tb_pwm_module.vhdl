@@ -2,109 +2,126 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity tb_pwm_module is
--- Testbench entity nemá žádné porty
-end tb_pwm_module;
+entity pwm_tb is
+end pwm_tb;
 
-architecture behavior of tb_pwm_module is
-    component pwm is
+architecture behavior of pwm_tb is
+
+    -- Component Declaration
+    component pwm
         generic (
-            max_value :integer:=200000; -- Max value for duty cycl
-            pwm_bit_width :integer:=19 -- Bit width for duty cycle
+            max_value : integer := 200_000; -- Max value for duty cycle
+            pwm_bit_width : integer := 19 -- Bit width for duty cycle
         );
         Port (
             clk         : in  STD_LOGIC;
-            rst       : in  STD_LOGIC;
+            rst         : in  STD_LOGIC;
             pwm_out     : out STD_LOGIC;
-            hundreds_out : out STD_LOGIC_VECTOR(3 downto 0); -- Output hundreds of percentage
-            tens_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
-            ones_out   :out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
-            btn_up     : in  STD_LOGIC; -- Button to increase duty cycle
-            btn_down   : in  STD_LOGIC -- Button to decrease duty cycle
+            hundreds_out : out STD_LOGIC_VECTOR(3 downto 0);
+            tens_out     : out STD_LOGIC_VECTOR(3 downto 0);
+            ones_out     : out STD_LOGIC_VECTOR(3 downto 0);
+            btn_up       : in  STD_LOGIC;
+            btn_down     : in  STD_LOGIC
         );
-    end component pwm;
-    -- Konfigurace generických parametrů
-    constant pwm_bit_width : integer := 19;
-    constant max_value     : integer := 200000;
+    end component;
 
-    -- Signály pro propojení s testovanou entitou
+    -- Signal Declarations
     signal clk         : STD_LOGIC := '0';
     signal rst         : STD_LOGIC := '0';
     signal pwm_out     : STD_LOGIC;
-    signal btn_up      : STD_LOGIC := '0'; -- Button to increase duty cycle
-    signal btn_down    : STD_LOGIC := '0'; -- Button to decrease duty cycle
-    signal hundreds_out : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output hundreds of percentage
-    
-    signal tens_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output tens of percentage
-    signal ones_out    : STD_LOGIC_VECTOR(3 downto 0) := (others => '0'); -- Output ones of percentage
+    signal hundreds_out, tens_out, ones_out : STD_LOGIC_VECTOR(3 downto 0);
+    signal btn_up      : STD_LOGIC := '0';
+    signal btn_down    : STD_LOGIC := '0';
 
-    -- Taktovací perioda
-    constant clk_period : time := 100 ns;
+    constant clk_period : time := 1000 ns;
 
 begin
-    -- Instance testovaného modulu
+
+    -- Instantiate the Unit Under Test (UUT)
     uut: pwm
-        generic map (
-            max_value => max_value,
-            pwm_bit_width => pwm_bit_width
-        )
         port map (
             clk => clk,
             rst => rst,
             pwm_out => pwm_out,
+            hundreds_out => hundreds_out,
+            tens_out => tens_out,
+            ones_out => ones_out,
             btn_up => btn_up,
-            btn_down => btn_down,
-            hundreds_out => hundreds_out, -- Otevřeno pro testování
-            tens_out => tens_out, -- Otevřeno pro testování
-            ones_out => ones_out -- Otevřeno pro testování
+            btn_down => btn_down
         );
 
-    -- Generátor hodinového signálu
+    -- Clock generation
     clk_process : process
     begin
-        while true loop
-            clk <= '0';
-            wait for clk_period / 2;
-            clk <= '1';
-            wait for clk_period / 2;
-        end loop;
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
     end process;
 
-    -- Stimuly
+    -- Stimulus process
     stim_proc: process
-begin
-  -- Reset
+        -- Local procedure to press a button with debounce
+        procedure press_button(signal btn : out std_logic) is
+        begin
+            btn <= '1';
+            wait for 2 ms;  -- Must match debounce time
+            btn <= '0';
+            wait for 2 ms;
+        end procedure;
+
+    begin
+        -- Initial reset
         rst <= '1';
         wait for 20 ns;
         rst <= '0';
-
-        wait for 200 us;
-        wait for 3 ms;
-        -- Testování tlačítek pro změnu duty cycle
-        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 200 us; 
-        btn_up <= '0'; -- Uvolnit tlačítko
-        wait for 200 us;
-        btn_up <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 150 ms; 
-        btn_up <= '0'; 
-        wait for 200 ms;
-        btn_down <= '1'; -- Zmáčknout tlačítko pro zvýšení duty cycle
-        wait for 150 ms; 
-        btn_down <= '0'; 
-
-       
+        wait for 100 ns;
 
 
-       
-        
+        for i in 0 to 3 loop
+            -- Test btn_up - single press
+            btn_up <= '1';
+            wait for 1 ns;
+            btn_up <= '0';
+            wait for 1 ns;
+        end loop;
+        -- Test btn_up - single press
 
-        wait for 3 ms;
 
-        wait for 3 ms;
-    -- Ukončení simulace
-    wait;
-end process;
-   
+        press_button(btn_up);
+        wait for 1 ms;
+
+        -- Test btn_down - single press
+        for i in 0 to 3 loop
+            btn_down <= '1';
+            wait for 1 ns;
+            btn_down <= '0';
+            wait for 1 ns;
+        end loop;
+        press_button(btn_down);
+        wait for 1 ms;
+
+        -- Test rapid multiple presses of btn_up
+        for i in 0 to 3 loop
+            press_button(btn_up);
+            wait for 1 ms;
+        end loop;
+
+        -- Hold btn_up to trigger acceleration
+        btn_up <= '1';
+        wait for 60 ms; -- Exceeds TRESHOLD_ACCELERATION
+        btn_up <= '0';
+        wait for 10 ms;
+
+        -- Hold btn_down to test accelerated decrease
+        btn_down <= '1';
+        wait for 60 ms;
+        btn_down <= '0';
+        wait for 10 ms;
+
+        -- End of test
+        wait for 50 ms;
+        assert false report "Simulation Finished" severity failure;
+    end process;
 
 end behavior;
