@@ -10,8 +10,8 @@ architecture behavior of pwm_tb is
     -- Component Declaration
     component pwm
         generic (
-            max_value : integer := 200_000; -- Max value for duty cycle
-            pwm_bit_width : integer := 19 -- Bit width for duty cycle
+            max_value : integer := 255; -- Max value for duty cycle
+            pwm_bit_width : integer := 8 -- Bit width for duty cycle
         );
         Port (
             clk         : in  STD_LOGIC;

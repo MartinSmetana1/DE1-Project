@@ -33,6 +33,8 @@ architecture Behavioral of pwm is
     signal accelerating : STD_LOGIC:= '0';
     signal accelerating_counter: UNSIGNED(23 downto 0):=(others =>'0');
     constant TRESHOLD_ACCELERATION : UNSIGNED(23 downto 0) := TO_UNSIGNED(5_000, 24); -- adjust depending on clk freq   /50ms rn
+
+    
     
 
     
@@ -85,6 +87,11 @@ begin
 end process;
 
 process(clk, rst)
+    variable temp_value : unsigned(pwm_bit_width-1 downto 0);
+    variable duty_int : integer;
+    variable increment : integer;
+    variable decrement : integer;
+
 begin
     if rst = '1' then
         duty_cycle_internal <= (others => '0');
@@ -110,29 +117,47 @@ begin
         end if;
 
 
-        if btn_down_db = '1' and unsigned(duty_cycle_internal) > 0 and btn_down_prev= '1'then
+        if btn_up_db = '1' and unsigned(duty_cycle_internal) < (max_value - 1) and btn_up_prev = '1' then
             accelerating <= '1';
             accelerating_counter <= accelerating_counter + 1;
             if accelerating_counter > TRESHOLD_ACCELERATION then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) - max_value / 100);
-                if unsigned(duty_cycle_internal) < 0 or unsigned(duty_cycle_internal)>max_value then
-                    duty_cycle_internal <= (others => '0');
+                -- Convert to integer and compute safely
+                duty_int := to_integer(unsigned(duty_cycle_internal)); -- Ensure this is within a process and correctly scoped
+                increment := 10 * max_value / 100;
+                duty_int := duty_int + increment;
+    
+             -- Clip if overflow
+                if duty_int >= max_value then
+                    duty_int := max_value - 1;
                 end if;
-                    
+    
+                duty_cycle_internal <= std_logic_vector(to_unsigned(duty_int, pwm_bit_width));
+                accelerating_counter <= (others => '0');
             end if;
-        elsif btn_up_db = '1' and unsigned(duty_cycle_internal) < (max_value - 1) and btn_up_prev= '1'then
+    
+        elsif btn_down_db = '1' and unsigned(duty_cycle_internal) > 0 and btn_down_prev = '1' then
             accelerating <= '1';
             accelerating_counter <= accelerating_counter + 1;
             if accelerating_counter > TRESHOLD_ACCELERATION then
-                duty_cycle_internal <= std_logic_vector(unsigned(duty_cycle_internal) + max_value / 100);
-                if  unsigned(duty_cycle_internal)>max_value then
-                    duty_cycle_internal <= std_logic_vector(to_unsigned(max_value, pwm_bit_width));
+                -- Convert to integer and compute safely
+                duty_int  := to_integer(unsigned(duty_cycle_internal));
+                 decrement  := 10 * max_value / 100;
+                duty_int := duty_int - decrement;
+    
+                -- Clip if underflow
+                if duty_int < 0 then
+                    duty_int := 0;
                 end if;
+    
+                duty_cycle_internal <= std_logic_vector(to_unsigned(duty_int, pwm_bit_width));
+                accelerating_counter <= (others => '0');
             end if;
         else
             accelerating <= '0';
             accelerating_counter <= (others => '0');
         end if;
+
+      
         
 
 
