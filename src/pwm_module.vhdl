@@ -4,8 +4,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity pwm is
     generic (
-        max_value : integer := 200_000; -- Max value for duty cycle
-        pwm_bit_width : integer := 19 -- Bit width for duty cycle
+        max_value : integer := 255; -- Max value for duty cycle
+        pwm_bit_width : integer := 8 -- Bit width for duty cycle
     );
     Port (
         clk           : in  STD_LOGIC;
@@ -24,14 +24,14 @@ architecture Behavioral of pwm is
     signal duty_cycle_internal : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal duty_percent : integer range 0 to 100 := 0;
 
-    constant DEBOUNCE_LIMIT : integer := 1_000; -- adjust depending on clk freq (e.g., 10ms)
+    constant DEBOUNCE_LIMIT : integer := 1_000_0000; -- adjust depending on clk freq (e.g., 10ms)
     signal btn_up_cnt, btn_down_cnt : integer range 0 to DEBOUNCE_LIMIT := 0;
     signal btn_up_db, btn_down_db : std_logic := '0';
     signal btn_up_prev, btn_down_prev : std_logic := '0';
 
     signal accelerating : STD_LOGIC := '0';
     signal accelerating_counter : UNSIGNED(23 downto 0) := (others => '0');
-    constant TRESHOLD_ACCELERATION : UNSIGNED(23 downto 0) := TO_UNSIGNED(5_000, 24); -- e.g., 50ms
+    constant TRESHOLD_ACCELERATION : UNSIGNED(23 downto 0) := TO_UNSIGNED(5_0000_0000, 24); -- e.g., 50ms
 begin
 
     -- Update duty_cycle_internal based on duty_percent

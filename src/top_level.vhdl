@@ -38,7 +38,7 @@ entity top_level is
     BTND      : in    std_logic;                    --! down btn
     BTNC      : in    std_logic;                    --! up btn
     LED16_B   : out   std_logic;                     --! Sequence completed
-    LED16_R   : out   std_logic;                     --! Sequence completed
+    LED17_R   : out   std_logic;                     --! Sequence completed
     CA        : out   std_logic;                     --! Cathode of segment A
     CB        : out   std_logic;                     --! Cathode of segment B
     CC        : out   std_logic;                     --! Cathode of segment C
@@ -47,7 +47,7 @@ entity top_level is
     CF        : out   std_logic;                     --! Cathode of segment F
     CG        : out   std_logic;                     --! Cathode of segment G
     DP        : out   std_logic; 
-    SW        : in    STD_LOGIC;           --! Decimal point
+    SW        : in    std_logic;           --! Decimal point
     AN       : out   std_logic_vector(7 downto 0)  --! Common anodes of all on-board displays
   );
 end top_level;
@@ -78,8 +78,8 @@ component bin2segMult is
 end component;
 component pwm is
     generic (
-        max_value :integer:=200_000; -- Max value for duty cycl
-        pwm_bit_width : integer:=19 -- Bit width for duty cycle
+        max_value :integer:=255; -- Max value for duty cycl
+        pwm_bit_width : integer:=8 -- Bit width for duty cycle
     );
     Port(
         clk         : in  STD_LOGIC;
@@ -92,7 +92,7 @@ component pwm is
         btn_down   : in  STD_LOGIC -- Button to decrease duty cycle
     );
 end component;
-signal local_sig_en_500ms: std_logic;
+signal local_sig_en: std_logic;
 signal ones_1: std_logic_vector(3 downto 0);
 signal tens_1: std_logic_vector(3 downto 0);
 signal ones_2 : std_logic_vector(3 downto 0);
@@ -111,14 +111,14 @@ begin
 
 
 
-CLK_EN_100MS: component clock_enable
+CLK_EN_1MS: component clock_enable
         generic map(
-             N_PERIODS=>50_000_000
+             N_PERIODS=>100_000
         )
         port map(
             clk => CLK100MHZ,
             rst => BTNC,
-            pulse => local_sig_en_500ms          
+            pulse => local_sig_en          
         );
 
 
@@ -126,8 +126,8 @@ btn_down_pwm1 <= BTND when SW = '1' else '0';
 btn_up_pwm1 <= BTNU when SW = '1' else '0';
 PWM_in_1: component pwm
 generic map(
-        max_value =>200_000, -- Max value for duty cycl
-        pwm_bit_width =>19 -- Bit width for duty cycle
+        max_value =>255, -- Max value for duty cycl
+        pwm_bit_width =>8 -- Bit width for duty cycle
     )
     Port map(
         clk         =>CLK100MHZ,
@@ -144,13 +144,13 @@ btn_down_pwm2 <= BTND when SW = '0' else '0';
 btn_up_pwm2 <= BTNU when SW = '0' else '0';
 PWM_IN_2: component pwm
     generic map(
-        max_value =>200_000, -- Max value for duty cycl
-        pwm_bit_width =>19 -- Bit width for duty cycle
+        max_value =>255, -- Max value for duty cycl
+        pwm_bit_width =>8 -- Bit width for duty cycle
     )
     Port map(
         clk         =>CLK100MHZ,
         rst       =>BTNC,
-        pwm_out    =>LED16_R,
+        pwm_out    =>LED17_R,
         ones_out   => ones_2, -- Output ones of percentage
         tens_out   => tens_2, -- Output ones of percentage
         hundreds_out => hundreds_2, -- Output ones of percentage
@@ -159,7 +159,7 @@ PWM_IN_2: component pwm
     );
 display: component bin2segMult
     port map(
-        clk   => CLK100MHZ,
+        clk   => local_sig_en,
         reset => BTNC,
         ones_1  => ones_1,
         tens_1  => tens_1,
@@ -181,3 +181,4 @@ DP <= '1'; -- Decimal point is always off
 
 
 end Behavioral;
+
