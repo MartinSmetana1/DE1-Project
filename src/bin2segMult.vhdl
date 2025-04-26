@@ -22,8 +22,6 @@ end entity bin2segMult;
 
 architecture behavioral of bin2segMult is
     signal Pos_register : integer := 0;
-    signal refresh_counter : unsigned(15 downto 0) := (others => '0'); -- 16-bit counter
-    signal refresh_clk : std_logic := '0'; -- slow clock for multiplexing
 
     function Bin2Seg(bin: std_logic_vector(3 downto 0)) return std_logic_vector is
 
@@ -45,25 +43,10 @@ architecture behavioral of bin2segMult is
 
 begin
 
-
-process (clk, reset)
-begin
-    if reset = '1' then
-        refresh_counter <= (others => '0');
-        refresh_clk <= '0';
-    elsif rising_edge(clk) then
-        if refresh_counter = 10000 then -- adjust this number depending on clk speed
-            refresh_counter <= (others => '0');
-            refresh_clk <= not refresh_clk; -- toggle refresh clock
-        else
-            refresh_counter <= refresh_counter + 1;
-        end if;
-    end if;
-end process;
    
-process (Pos_register, ones_1, tens_1, refresh_clk, reset, ones_2, tens_2, hundreds_1, hundreds_2)
+process (Pos_register, ones_1, tens_1, clk, reset, ones_2, tens_2, hundreds_1, hundreds_2)
     begin
-        if rising_edge(refresh_clk) then
+        if rising_edge(clk) then
             case Pos_register is
                 when 0 => 
                     POS_OUT <= b"1111_1110"; -- 1st position

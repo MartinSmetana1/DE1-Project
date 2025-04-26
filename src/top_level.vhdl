@@ -93,6 +93,7 @@ component pwm is
     );
 end component;
 signal local_sig_en: std_logic;
+signal local_sig_en_10MHz: std_logic;
 signal ones_1: std_logic_vector(3 downto 0);
 signal tens_1: std_logic_vector(3 downto 0);
 signal ones_2 : std_logic_vector(3 downto 0);
@@ -120,6 +121,15 @@ CLK_EN_1MS: component clock_enable
             rst => BTNC,
             pulse => local_sig_en          
         );
+CLK_EN_10MHz: component clock_enable
+        generic map(
+             N_PERIODS=>10
+        )
+        port map(
+            clk => CLK100MHZ,
+            rst => BTNC,
+            pulse => local_sig_en_10MHz         
+        );
 
 
 btn_down_pwm1 <= BTND when SW = '1' else '0';
@@ -130,7 +140,7 @@ generic map(
         pwm_bit_width =>8 -- Bit width for duty cycle
     )
     Port map(
-        clk         =>CLK100MHZ,
+        clk         =>local_sig_en_10MHz,
         rst       =>BTNC,
         pwm_out    =>LED16_B,
         ones_out   => ones_1, -- Output ones of percentage
@@ -148,7 +158,7 @@ PWM_IN_2: component pwm
         pwm_bit_width =>8 -- Bit width for duty cycle
     )
     Port map(
-        clk         =>CLK100MHZ,
+        clk         =>local_sig_en_10MHz,
         rst       =>BTNC,
         pwm_out    =>LED17_R,
         ones_out   => ones_2, -- Output ones of percentage

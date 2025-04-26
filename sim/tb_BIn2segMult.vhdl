@@ -35,7 +35,7 @@ architecture Behavioral of tb_bin2segMult is
     signal seg_out : STD_LOGIC_VECTOR(6 downto 0);
     signal POS_OUT : STD_LOGIC_VECTOR(7 downto 0);
 
-    constant clk_period : time := 10 ns; -- 50MHz clock
+    constant clk_period : time := 1 ms; -- 50MHz clock
 
 begin
 
@@ -86,7 +86,7 @@ begin
                 bin_in_ones2 <= std_logic_vector(to_unsigned(9 - ones, 4));
                 bin_in_hundreds2 <= "0000";
 
-                wait for 2 ms; -- longer wait because of slower refresh clock
+                wait for 20 ms; -- longer wait because of slower refresh clock
             end loop;
         end loop;
 
