@@ -1,23 +1,3 @@
-----------------------------------------------------------------------------------
--- Company:
--- Engineer:
---
--- Create Date: 04/11/2025 09:18:04 AM
--- Design Name:
--- Module Name: top_level - Behavioral
--- Project Name:
--- Target Devices:
--- Tool Versions:
--- Description:
---
--- Dependencies:
---
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
-----------------------------------------------------------------------------------
-
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -33,25 +13,26 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity top_level is
  port (
-    CLK100MHZ : in    std_logic;                    --! Main clock
-    BTNU      : in    std_logic;                    --! up btn
-    BTND      : in    std_logic;                    --! down btn
-    BTNC      : in    std_logic;                    --! up btn
-    LED16_B   : out   std_logic;                     --! Sequence completed
-    LED17_R   : out   std_logic;                     --! Sequence completed
-    CA        : out   std_logic;                     --! Cathode of segment A
-    CB        : out   std_logic;                     --! Cathode of segment B
-    CC        : out   std_logic;                     --! Cathode of segment C
-    CD        : out   std_logic;                     --! Cathode of segment D
-    CE        : out   std_logic;                     --! Cathode of segment E
-    CF        : out   std_logic;                     --! Cathode of segment F
-    CG        : out   std_logic;                     --! Cathode of segment G
-    DP        : out   std_logic; 
-    SW        : in    std_logic;           --! Decimal point
-    AN       : out   std_logic_vector(7 downto 0)  --! Common anodes of all on-board displays
+    CLK100MHZ : in    std_logic; -- Main clock
+    BTNU      : in    std_logic; -- Button to increase duty cycle
+    BTND      : in    std_logic; -- Button to decrease duty cycle 
+    BTNC      : in    std_logic; -- Reset button 
+    LED16_B   : out   std_logic; -- PWM output for blue LED 
+    LED17_R   : out   std_logic; -- PWM output for red LED
+    CA        : out   std_logic; -- Cathode of segment A
+    CB        : out   std_logic; -- Cathode of segment B
+    CC        : out   std_logic; -- Cathode of segment C
+    CD        : out   std_logic; -- Cathode of segment D
+    CE        : out   std_logic; -- Cathode of segment E
+    CF        : out   std_logic; -- Cathode of segment F
+    CG        : out   std_logic; -- Cathode of segment G
+    DP        : out   std_logic; -- Decimal point
+    SW        : in    std_logic; -- Switch to select between two PWM modules
+    AN        : out   std_logic_vector(7 downto 0)  -- Common anodes of all on-board displays
   );
 end top_level;
 
+-- Component declarations for clock_enable, bin2segMult, and pwm, declared in their respective vhdl file
 architecture Behavioral of top_level is
 component clock_enable is
     generic(N_PERIODS:positive
@@ -92,6 +73,7 @@ component pwm is
         btn_down   : in  STD_LOGIC -- Button to decrease duty cycle
     );
 end component;
+-- Signal declarations
 signal local_sig_en: std_logic;
 signal local_sig_en_10MHz: std_logic;
 signal ones_1: std_logic_vector(3 downto 0);
@@ -101,8 +83,6 @@ signal tens_2 : std_logic_vector(3 downto 0);
 signal hundreds_1 : std_logic_vector(3 downto 0);
 signal hundreds_2 : std_logic_vector(3 downto 0);
 
-
-
 signal btn_up_pwm1: std_logic;
 signal btn_down_pwm1: std_logic;
 signal btn_up_pwm2: std_logic;
@@ -110,8 +90,7 @@ signal btn_down_pwm2: std_logic;
 
 begin
 
-
-
+--Clock enable module to generate 1ms pulse
 CLK_EN_1MS: component clock_enable
         generic map(
              N_PERIODS=>100_000
@@ -187,8 +166,6 @@ display: component bin2segMult
         POS_OUT   => AN
     );
 DP <= '1'; -- Decimal point is always off
--- Set all anodes to high (off) by default
-
-
+           -- Set all anodes to high (off) by default
 end Behavioral;
 

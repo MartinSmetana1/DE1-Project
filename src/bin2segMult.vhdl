@@ -5,23 +5,23 @@ use IEEE.NUMERIC_STD.ALL;
 
  entity bin2segMult is
     port (
-        clk   : in std_logic;
-        reset : in std_logic;
+        clk   : in std_logic; -- Clock signal
+        reset : in std_logic;-- Reset signal
+        -- Binary inputs for the 7-segment display
         ones_1 : in STD_LOGIC_VECTOR(3 downto 0);
         tens_1: in STD_LOGIC_VECTOR(3 downto 0);
         hundreds_1 : in STD_LOGIC_VECTOR(3 downto 0);
         ones_2 : in STD_LOGIC_VECTOR(3 downto 0);
         tens_2: in STD_LOGIC_VECTOR(3 downto 0);
         hundreds_2 : in STD_LOGIC_VECTOR(3 downto 0);
-        seg : out std_logic_vector(6 downto 0);
-        POS_OUT   : out std_logic_vector(7 downto 0)
-        --common anode for 7-segment display
+        seg : out std_logic_vector(6 downto 0); -- 7-segment display output
+        POS_OUT   : out std_logic_vector(7 downto 0) -- 8-bit output for position selection
     );
 
 end entity bin2segMult;
 
 architecture behavioral of bin2segMult is
-    signal Pos_register : integer := 0;
+    signal Pos_register : integer := 0; -- Position register to keep track of which digit to display
 
     function Bin2Seg(bin: std_logic_vector(3 downto 0)) return std_logic_vector is
 
@@ -43,7 +43,10 @@ architecture behavioral of bin2segMult is
 
 begin
 
-   
+-- Process to control the 7-segment display and position output
+-- The process is triggered on the rising edge of the clock signal
+-- and updates the display based on the current position register value.
+
 process (Pos_register, ones_1, tens_1, clk, reset, ones_2, tens_2, hundreds_1, hundreds_2)
     begin
         if rising_edge(clk) then

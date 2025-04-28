@@ -38,18 +38,18 @@ begin
     p_clk_enable : process (clk) is
     begin
 
-        if (rising_edge(clk)) then                   -- Synchronous process
-            if (rst = '1') then                      -- High-active reset
-                sig_count <= 0;
+        if (rising_edge(clk)) then -- Synchronous process
+            if (rst = '1') then -- High-active reset
+                sig_count <= 0; 
 
             -- Counting
             elsif (sig_count < (N_PERIODS - 1)) then
-                sig_count <= sig_count + 1;          -- Increment local counter
+                sig_count <= sig_count + 1; -- Increment local counter
 
             -- End of counter reached
             else
                 sig_count <= 0;
-            end if;                                  -- Each `if` must end by `end if`
+            end if; 
         end if;
 
     end process p_clk_enable;
