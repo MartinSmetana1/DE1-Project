@@ -17,7 +17,7 @@ The main contributions of the project are:
 * Integration of PWM outputs with LEDs and 7-segment display segments.
 * Verification of the design through simulations and on-board demonstration.
 
-![📌 View A3 Project Poster](https://github.com/user-attachments/assets/65b8280c-84b9-40ab-beec-67ba2e0ea1fa)
+![📌 View A3 Project Poster](https://github.com/user-attachments/assets/80ea885c-9010-4854-9a7e-8f97ec889c00)
 
 ---
 
