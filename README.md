@@ -1,40 +1,74 @@
 # DE1-Project
-### Team members
 
-* Střítežský Jiří - nejelepsi
-* Smetana Martin
-* Ritschel Natan
-* Špalle Vojtěch
+### Team Members
+
+* Střítežský Jiří  
+* Smetana Martin  
+* Ritschel Natan  
+* Špalle Vojtěch  
 
 ### Abstract
 
-An abstract is a short summary of your project, usually about a paragraph (6-7 sentences, 150-250 words) long. A well-written abstract serves multiple purposes: (a) an abstract lets readers get the gist or essence of your project quickly; (b) an abstract prepares readers to follow the detailed information, description, and results in your report; (c) and, later, an abstract helps readers remember key points from your project.
+This project explores Pulse Width Modulation (PWM) control using the DE1-SoC FPGA development board. The core objective is to implement a system that manages two LEDs and two segments of a 7-segment display through hardware-level PWM signals. The system is designed using VHDL and simulates real-world embedded control techniques that balance brightness and timing precision. The project includes both hardware schematics and software logic to ensure a modular and scalable design. Through simulation and hardware testing, we verified the consistency and performance of the PWM output and its interaction with visible elements. This project serves as a foundational example for students interested in digital logic design, hardware description languages, and FPGA development.  
 
 The main contributions of the project are:
 
-* ...
-* ...
-* ...
+* Implementation of a dual-channel PWM controller using VHDL.
+* Integration of PWM outputs with LEDs and 7-segment display segments.
+* Verification of the design through simulations and on-board demonstration.
 
-[Photo(s) of your application with labels of individual parts.]
+![Photo of the application with labeled parts](./docs/hardware_photo_labeled.jpg)  
+[📌 View A3 Project Poster](./docs/A3_Poster.pdf)  
+[▶️ Watch Video Presentation (Optional)](https://www.youtube.com/your-video-link)
 
-[Link to A3 project poster.]
+---
 
-[Optional: Link to your short video presentation.]
+## Hardware Description of Demo Application
 
-## Hardware description of demo application
+The application runs on the DE1-SoC board, utilizing its built-in LEDs and 7-segment display modules. The system uses two PWM modules: one driving two LEDs with variable duty cycles, and another controlling two 7-segment digits for brightness modulation. The following schematic represents the top-level hardware design:
 
-Describe your implementation. Put a descriptive top-level schematic of your application.
+![Top-Level Schematic](./docs/top_level_schematic.png)
 
-## Software description
+---
 
-Put flowchats/state diagrams of your algorithm(s) and direct links to source/testbench files in `src` and `sim` folders.
+## Software Description
 
-### Component(s) simulations
+The PWM control logic is implemented in VHDL. The project includes modular design elements, with clearly defined signal flow and control structure. The main software components are:
 
-Write descriptive text and put simulation screenshots of components you created during the project.
+* A clock divider to scale down the input clock.
+* A PWM generator module with adjustable duty cycle.
+* A control unit to assign duty cycles based on switches or input.
+
+Below are diagrams showing the flow of the software logic:
+
+![PWM Flowchart](./docs/pwm_flowchart.png)  
+[🔗 Source Code (`src` folder)](./src)  
+[🔗 Testbenches (`sim` folder)](./sim)
+
+---
+
+### Component(s) Simulations
+
+Each module was simulated to validate behavior before hardware deployment. Key components and their simulation screenshots include:
+
+**PWM Generator Simulation:**
+
+![PWM Signal Simulation](./docs/pwm_simulation.png)  
+_Above: PWM wave with 50% duty cycle for LED channel._
+
+**7-Segment Display Simulation:**
+
+![7-Segment Display Simulation](./docs/seven_seg_sim.png)  
+_Above: Duty cycle variations on display output._
+
+---
 
 ## References
 
-1. Put here the references and online tools you used.
-2. ...
+1. DE1-SoC User Manual and GPIO reference – [Intel/Altera Docs](https://www.intel.com/content/www/us/en/docs/programmable/683537/current/de1-soc-user-manual.pdf)
+2. Online waveform and logic analyzers (e.g., EDA Playground, ModelSim)
+3. VHDL reference documentation – IEEE Std 1076
+4. Project GitHub Repository – [DE1-Project on GitHub](https://github.com/MartinSmetana1/DE1-Project)
+
+---
+
