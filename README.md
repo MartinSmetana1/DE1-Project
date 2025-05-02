@@ -2,14 +2,14 @@
 
 ### Team Members
 
-* Střítežský Jiří  
-* Smetana Martin  
-* Ritschel Natan  
-* Špalle Vojtěch  
+* Střítežský Jiří - Code check, formatting, consulting, presenting
+* Smetana Martin - Main coder, tester 
+* Ritschel Natan - ReadMe  
+* Špalle Vojtěch - Poster, visuals
 
 ### Abstract
 
-This project explores Pulse Width Modulation (PWM) control using the DE1-SoC FPGA development board. The core objective is to implement a system that manages two LEDs and two segments of a 7-segment display through hardware-level PWM signals. The system is designed using VHDL and simulates real-world embedded control techniques that balance brightness and timing precision. The project includes both hardware schematics and software logic to ensure a modular and scalable design. Through simulation and hardware testing, we verified the consistency and performance of the PWM output and its interaction with visible elements. This project serves as a foundational example for students interested in digital logic design, hardware description languages, and FPGA development.  
+This project explores Pulse Width Modulation (PWM) control using the DE1-SoC FPGA development board. The core objective is to implement a system that manages two LEDs and two segments of a 7-segment display through hardware-level PWM signals. The system is designed using VHDL and simulates real-world embedded control techniques that balance brightness and timing precision. The project includes both hardware schematics and software logic to ensure a modular and scalable design. Through simulation and hardware testing, we verified the consistency and performance of the PWM output and its interaction with visible elements.
 
 The main contributions of the project are:
 
@@ -17,23 +17,22 @@ The main contributions of the project are:
 * Integration of PWM outputs with LEDs and 7-segment display segments.
 * Verification of the design through simulations and on-board demonstration.
 
-![Photo of the application with labeled parts](./docs/hardware_photo_labeled.jpg)  
-[📌 View A3 Project Poster](./docs/A3_Poster.pdf)  
-[▶️ Watch Video Presentation (Optional)](https://www.youtube.com/your-video-link)
+![📌 View A3 Project Poster](https://github.com/user-attachments/assets/65b8280c-84b9-40ab-beec-67ba2e0ea1fa)
 
 ---
 
 ## Hardware Description of Demo Application
 
-The application runs on the DE1-SoC board, utilizing its built-in LEDs and 7-segment display modules. The system uses two PWM modules: one driving two LEDs with variable duty cycles, and another controlling two 7-segment digits for brightness modulation. The following schematic represents the top-level hardware design:
+The application runs on the NEXYS-A750T board, utilizing its built-in LEDs and 7-segment display modules. The system uses PWM modules for driving two LEDs with variable duty cycles used for brightness modulation. The following schematic represents the top-level hardware design:
 
-![Top-Level Schematic](./docs/top_level_schematic.png)
+
+![topLevel schematic](https://github.com/user-attachments/assets/8b420d2d-9e9e-4cf0-be3b-22ac1742ee07)
 
 ---
 
 ## Software Description
 
-The PWM control logic is implemented in VHDL. The project includes modular design elements, with clearly defined signal flow and control structure. The main software components are:
+The PWM control logic is implemented in VHDL using Vivado and Visual Studio. The project includes modular design elements, with clearly defined signal flow and control structure. The main software components are:
 
 * A clock divider to scale down the input clock.
 * A PWM generator module with adjustable duty cycle.
