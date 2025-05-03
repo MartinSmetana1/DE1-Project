@@ -28,7 +28,9 @@ entity top_level is
     CG        : out   std_logic; -- Cathode of segment G
     DP        : out   std_logic; -- Decimal point
     SW        : in    std_logic; -- Switch to select between two PWM modules
-    AN        : out   std_logic_vector(7 downto 0)  -- Common anodes of all on-board displays
+    AN        : out   std_logic_vector(7 downto 0);  -- Common anodes of all on-board displays
+    JA1  : out std_logic;
+    JA2 : out std_logic 
   );
 end top_level;
 
@@ -88,12 +90,15 @@ signal btn_down_pwm1: std_logic;
 signal btn_up_pwm2: std_logic;
 signal btn_down_pwm2: std_logic;
 
+signal out_pwm1: std_logic;
+signal out_pwm2: std_logic;
+
 begin
 
 --Clock enable module to generate 1ms pulse
 CLK_EN_1MS: component clock_enable
         generic map(
-             N_PERIODS=>100_000
+             N_PERIODS=>100_00
         )
         port map(
             clk => CLK100MHZ,
@@ -121,7 +126,7 @@ generic map(
     Port map(
         clk         =>local_sig_en_10MHz,
         rst       =>BTNC,
-        pwm_out    =>LED16_B,
+        pwm_out    =>out_pwm1,
         ones_out   => ones_1, -- Output ones of percentage
         tens_out   => tens_1, -- Output ones of percentage
         hundreds_out => hundreds_1, -- Output ones of percentage
@@ -139,7 +144,7 @@ PWM_IN_2: component pwm
     Port map(
         clk         =>local_sig_en_10MHz,
         rst       =>BTNC,
-        pwm_out    =>LED17_R,
+        pwm_out    =>out_pwm2,
         ones_out   => ones_2, -- Output ones of percentage
         tens_out   => tens_2, -- Output ones of percentage
         hundreds_out => hundreds_2, -- Output ones of percentage
@@ -167,5 +172,10 @@ display: component bin2segMult
     );
 DP <= '1'; -- Decimal point is always off
            -- Set all anodes to high (off) by default
-end Behavioral;
+           
+JA1 <= out_pwm1;
+JA2 <= out_pwm2;
 
+LED16_B <= out_pwm1;
+LED17_R<= out_pwm2;
+end Behavioral;

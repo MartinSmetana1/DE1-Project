@@ -8,9 +8,9 @@ entity pwm is
         pwm_bit_width : integer := 8 -- Bit width for duty cycle
     );
     Port (
-        clk           : in  STD_LOGIC; -- Clock signal
-        rst           : in  STD_LOGIC; -- Reset signal
-        pwm_out       : out STD_LOGIC; -- PWM output signal
+        clk           : in  STD_LOGIC;
+        rst           : in  STD_LOGIC;
+        pwm_out       : out STD_LOGIC;
         hundreds_out  : out STD_LOGIC_VECTOR(3 downto 0); -- Output hundreds of percentage
         tens_out      : out STD_LOGIC_VECTOR(3 downto 0); -- Output tens of percentage
         ones_out      : out STD_LOGIC_VECTOR(3 downto 0); -- Output ones of percentage
@@ -20,18 +20,18 @@ entity pwm is
 end pwm;
 
 architecture Behavioral of pwm is
-    signal counter : unsigned (pwm_bit_width-1 downto 0) := (others => '0'); -- Counter for PWM generation
-    signal duty_cycle_internal : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0'); -- Internal duty cycle signal
+    signal counter : unsigned (pwm_bit_width-1 downto 0) := (others => '0');
+    signal duty_cycle_internal : STD_LOGIC_VECTOR(pwm_bit_width-1 downto 0) := (others => '0');
     signal duty_percent : integer range 0 to 100 := 0;
 
-    constant DEBOUNCE_LIMIT : integer := 100_000; -- Adjust depending on clk freq (e.g., 10ms)
+    constant DEBOUNCE_LIMIT : integer := 1_000_000; -- adjust depending on clk freq (e.g., 10ms)
     signal btn_up_cnt, btn_down_cnt : integer range 0 to DEBOUNCE_LIMIT := 0;
     signal btn_up_db, btn_down_db : std_logic := '0';
     signal btn_up_prev, btn_down_prev : std_logic := '0';
 
     signal accelerating : STD_LOGIC := '0';
     signal accelerating_counter : UNSIGNED(23 downto 0) := (others => '0');
-    constant TRESHOLD_ACCELERATION : UNSIGNED(23 downto 0) := TO_UNSIGNED(500_0000, 24); -- e.g., 50ms
+    constant TRESHOLD_ACCELERATION : UNSIGNED(23 downto 0) := TO_UNSIGNED(5_0000_0000, 24); -- e.g., 50ms
 begin
 
     -- Update duty_cycle_internal based on duty_percent
