@@ -1,21 +1,21 @@
-# DE1-Project
+# DE1-Project - multi-channel Pulse Width Modulation (PWM) for LED brightness 
 
 ### Team Members
 
+* Smetana Martin - Main coder, testing
 * Střítežský Jiří - Code check, formatting, consulting, presenting
-* Smetana Martin - Main coder, tester 
-* Ritschel Natan - ReadMe  
+* Ritschel Natan - ReadMe, testing
 * Špalle Vojtěch - Poster, visuals
 
 ### Abstract
 
-This project explores Pulse Width Modulation (PWM) control using the DE1-SoC FPGA development board. The core objective is to implement a system that manages two LEDs and two segments of a 7-segment display through hardware-level PWM signals. The system is designed using VHDL and simulates real-world embedded control techniques that balance brightness and timing precision. The project includes both hardware schematics and software logic to ensure a modular and scalable design. Through simulation and hardware testing, we verified the consistency and performance of the PWM output and its interaction with visible elements.
+This project explores Pulse Width Modulation (PWM) control using the Nexys A7-50T board. The core objective is to implement a system that manages two LEDs through PWM signals and displays the PWM percentage on two trios of 7-segment displays. The system is designed using Xilinx Vivado in VHDL. The repo includes both hardware schematics and software logic to ensure a modular and scalable design. Through simulation and hardware testing, we verified the consistency and performance of the PWM output and its interaction with visible elements . 
 
 The main contributions of the project are:
 
 * Implementation of a dual-channel PWM controller using VHDL.
-* Integration of PWM outputs with LEDs and 7-segment display segments.
-* Verification of the design through simulations and on-board demonstration.
+* Integration of PWM outputs with LEDs.
+* Percentage sync with 7-segment displays.
 
 ![📌 View A3 Project Poster](https://github.com/user-attachments/assets/80ea885c-9010-4854-9a7e-8f97ec889c00)
 
@@ -40,9 +40,9 @@ The PWM control logic is implemented in VHDL using Vivado and Visual Studio. The
 
 Below are diagrams showing the flow of the software logic:
 
-![PWM Flowchart](./docs/pwm_flowchart.png)  
-[🔗 Source Code (`src` folder)](./src)  
-[🔗 Testbenches (`sim` folder)](./sim)
+![PWM Flowchart](https://github.com/MartinSmetana1/DE1-Project/blob/main/img/scope_0.png?raw=true)  
+[🔗 Source Code (`src` folder)](/main/src)  
+[🔗 Testbenches (`sim` folder)](/main/sim)
 
 ---
 
@@ -52,12 +52,11 @@ Each module was simulated to validate behavior before hardware deployment. Key c
 
 **PWM Generator Simulation:**
 
-![PWM Signal Simulation](./docs/pwm_simulation.png)  
-_Above: PWM wave with 50% duty cycle for LED channel._
+![PWM Signal Simulation](/main/img/PWM_TB.png)  
 
 **7-Segment Display Simulation:**
 
-![7-Segment Display Simulation](./docs/seven_seg_sim.png)  
+![7-Segment Display Simulation](/main/img/BIN2SEG_TB_CLOSE.png)  
 _Above: Duty cycle variations on display output._
 
 ---
@@ -65,9 +64,9 @@ _Above: Duty cycle variations on display output._
 ## References
 
 1. DE1-SoC User Manual and GPIO reference – [Intel/Altera Docs](https://www.intel.com/content/www/us/en/docs/programmable/683537/current/de1-soc-user-manual.pdf)
-2. Online waveform and logic analyzers (e.g., EDA Playground, ModelSim)
+2. Visual Studio Copilot
 3. VHDL reference documentation – IEEE Std 1076
-4. Project GitHub Repository – [DE1-Project on GitHub](https://github.com/MartinSmetana1/DE1-Project)
+4. VHDL course github page – [vhdl-labs](https://github.com/tomas-fryza/vhdl-labs)
 
 ---
 
