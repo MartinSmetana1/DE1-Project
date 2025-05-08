@@ -34,11 +34,10 @@ The application runs on the NEXYS-A750T board, utilizing its built-in LEDs and 7
 
 The PWM control logic is implemented in VHDL using Vivado and Visual Studio. The project includes modular design elements, with clearly defined signal flow and control structure. The main software components are:
 
-* A clock divider to scale down the input clock.
 * A PWM generator module with adjustable duty cycle.
 * A control unit to assign duty cycles based on switches or input.
 
-Below are diagrams showing the flow of the software logic:
+Below is an oscillogram using showing two channels at different duty cycles along with the source code and testbenches:
 
 ![PWM Oscillogram showing channel 1 and channel 2 at different levels](https://github.com/MartinSmetana1/DE1-Project/blob/main/img/scope_0.png?raw=true)  
 [🔗 Source Code (`src` folder)](./src)  
