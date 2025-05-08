@@ -17,7 +17,7 @@ The main contributions of the project are:
 * Integration of PWM outputs with LEDs.
 * Percentage sync with 7-segment displays.
 
-![📌 View A3 Project Poster](https://github.com/user-attachments/assets/a316d105-c854-4342-bf77-397c62b5bc59)
+![📌 View A3 Project Poster](https://github.com/user-attachments/assets/c2fb0014-9e11-46e1-a44b-e536f9b3cda3)
 
 ---
 
